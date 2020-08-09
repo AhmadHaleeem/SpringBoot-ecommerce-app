@@ -13,8 +13,10 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.http.HttpMethod;
 
+import com.haleem.ecommerce.entity.Country;
 import com.haleem.ecommerce.entity.Product;
 import com.haleem.ecommerce.entity.ProductCategory;
+import com.haleem.ecommerce.entity.State;
 
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer {
@@ -34,18 +36,25 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 		HttpMethod[] theUnsupportedActions = { HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE };
 		
 		// Disable HTTP methods for Product: PUT, POST, DELETE
-		config.getExposureConfiguration()
-				.forDomainType(Product.class)
-				.withItemExposure((metadate, httpMethods) -> httpMethods.disable(theUnsupportedActions))
-				.withCollectionExposure((metadate, httpMethods) -> httpMethods.disable(theUnsupportedActions));
+		disableHttpMethods(Product.class, config, theUnsupportedActions);
 		
-		config.getExposureConfiguration()
-				.forDomainType(ProductCategory.class)
-				.withItemExposure((metadate, httpMethods) -> httpMethods.disable(theUnsupportedActions))
-				.withCollectionExposure((metadate, httpMethods) -> httpMethods.disable(theUnsupportedActions));
+		disableHttpMethods(ProductCategory.class, config, theUnsupportedActions);
+		
+		disableHttpMethods(Country.class, config, theUnsupportedActions);
+		
+		disableHttpMethods(State.class, config, theUnsupportedActions);
 	
 		// call an internal helper method
 		eposeIds(config);
+	}
+
+
+
+	private void disableHttpMethods(Class theCalss, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions) {
+		config.getExposureConfiguration()
+				.forDomainType(theCalss)
+				.withItemExposure((metadate, httpMethods) -> httpMethods.disable(theUnsupportedActions))
+				.withCollectionExposure((metadate, httpMethods) -> httpMethods.disable(theUnsupportedActions));
 	}
 
 
